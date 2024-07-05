@@ -8,7 +8,9 @@ To get round this, we must add methods to the agent class which stringify interm
 
 Since the time of writing, AWS has released the Converse API, which does support tool calling and structured ouptut.
 
-## Dependencies
+## Set-up
+
+AWS Bedrock access keys can be imported from a .env file or set as variables in the script.
 
 To install the required dependencies, you can use the `requirements.txt` file:
 
