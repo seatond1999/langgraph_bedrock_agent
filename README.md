@@ -6,7 +6,7 @@ At the time of writing, the AWS Bedrock API does not support tool calling and st
 
 To get round this, we must add methods to the agent class which stringify intermediate steps and chat history. We also implement the LLM with a chain of runnables which includes a parser to parse the LLM output into a structured output.
 
-Since the time of writing, AWS has released the Converse API, which does support tool calling and structured ouptut. This is covered ....
+Since the time of writing, AWS has released the Converse API, which does support tool calling and structured ouptut.
 
 ## Dependencies
 
