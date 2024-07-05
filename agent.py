@@ -247,24 +247,5 @@ if __name__ == "__main__":
     abot = Agent(get_llm(), get_tools(), get_prompt())
     user_query = "What is my favourite tennis player's first name?"
     answer = invoke_agent(user_query, conversational_memory)
-
-# %% --------------------------------------------------------------------------
-# if __name__ == "__main__":
-#     user_query = "What is my favourite tennis player's full name alphabet positions?"
-#     result = abot.graph.invoke(
-#         {
-#             "user_query": user_query,
-#             "chat_history": conversational_memory,
-#         }
-#     )
-# -----------------------------------------------------------------------------
-
-
-# -----------------------------------------------------------------------------
-
-# %% --------------------------------------------------------------------------
-# from IPython.display import Image
-
-# Image(abot.graph.get_graph().draw_png())
-
-# %% --------------------------------------------------------------------------
+    user_query = "What are the alphabet positions of my favourite tennis player's full name?"
+    answer = invoke_agent(user_query, conversational_memory)
