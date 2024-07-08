@@ -16,6 +16,7 @@ boto3 = "^1.34.139"
 langchain-community = "^0.2.6"
 langgraph = "^0.1.5"
 httpx = "^0.27.0"
+black = "^24.4.2"
 
 
 [build-system]

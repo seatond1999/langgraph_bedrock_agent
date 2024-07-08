@@ -46,9 +46,7 @@ class Agent:
         graph = StateGraph(AgentState)
         graph.add_node("llm", self.call_bedrock)
         graph.add_node("action", self.take_action)
-        graph.add_conditional_edges(
-            "llm", self.exists_action, {True: "action", False: END}
-        )
+        graph.add_conditional_edges("llm", self.exists_action, {True: "action", False: END})
         graph.add_edge("action", "llm")
         graph.set_entry_point("llm")
         self.tools_str = self.stringify_tools(tools)
@@ -62,9 +60,7 @@ class Agent:
     def call_bedrock(self, state: AgentState):
         user_query = "User: " + state["user_query"]
         chat_history = self.stringify_messages(state["chat_history"])
-        intermediate_steps = self.stringify_intermediate_steps(
-            state["intermediate_steps"]
-        )
+        intermediate_steps = self.stringify_intermediate_steps(state["intermediate_steps"])
 
         messages = {
             "prompt": self.prompt,
@@ -84,9 +80,7 @@ class Agent:
             result = "bad tool name, retry"
         else:
             result = self.tools[tool_call.tool](tool_call.tool_input)
-            result = ToolMessage(
-                content=result, tool_call_id="call_" + str(uuid.uuid4())
-            )
+            result = ToolMessage(content=result, tool_call_id="call_" + str(uuid.uuid4()))
 
         print("Back to the model!")
         return {"intermediate_steps": [result]}
@@ -105,34 +99,21 @@ class Agent:
             | XMLAgentOutputParser()
         )
 
-    def stringify_intermediate_steps(
-        self, intermediate_steps: list[AgentAction, ToolMessage]
-    ) -> str:
+    def stringify_intermediate_steps(self, intermediate_steps: list[AgentAction, ToolMessage]) -> str:
         log = []
         for i in intermediate_steps:
             if isinstance(i, AgentAction):
-                log.append(
-                    f"<tool>{i.tool}</tool><tool_input>{i.tool_input}</tool_input>"
-                )
+                log.append(f"<tool>{i.tool}</tool><tool_input>{i.tool_input}</tool_input>")
             elif isinstance(i, ToolMessage):
                 log.append(f"<observation>{i.content}</observation>")
             else:
                 raise Exception(f"wrong response type from the llm chain: {type(i)}")
         return "".join(log)
 
-    def stringify_messages(
-        self, messages: list | ConversationBufferWindowMemory
-    ) -> str:
+    def stringify_messages(self, messages: list | ConversationBufferWindowMemory) -> str:
         messages = messages.chat_memory.messages
 
-        memory_list = [
-            (
-                f"User: {mem.content}"
-                if isinstance(mem, HumanMessage)
-                else f"Agent: {mem.content}"
-            )
-            for mem in messages
-        ]
+        memory_list = [(f"User: {mem.content}" if isinstance(mem, HumanMessage) else f"Agent: {mem.content}") for mem in messages]
         return "\n".join(memory_list)
 
     def stringify_tools(self, tools) -> str:
@@ -180,9 +161,7 @@ def get_surname(input: str) -> str:
 def get_name_alphabet_positions(full_name: str) -> list[int]:
     """Returns the alphabet positions of the user's favourite tennis player. The input to this function must be the first name, second name or full name of the tennis player which you should retrieve from a Previous Conversation, or using the get_forename and/or the get_surname function."""
     name_alphabet_positions = []
-    alphabet_positions = {
-        letter: position + 1 for position, letter in enumerate(string.ascii_lowercase)
-    }
+    alphabet_positions = {letter: position + 1 for position, letter in enumerate(string.ascii_lowercase)}
     alphabet_positions[" "] = 0
     for i in full_name:
         name_alphabet_positions.append(alphabet_positions[i.lower()])
@@ -223,9 +202,7 @@ def get_prompt() -> str:
     """
 
 
-def invoke_agent(
-    user_query: str, conversational_memory: ConversationBufferWindowMemory
-) -> str:
+def invoke_agent(user_query: str, conversational_memory: ConversationBufferWindowMemory) -> str:
     result = abot.graph.invoke(
         {
             "user_query": user_query,
@@ -241,9 +218,7 @@ def invoke_agent(
 # %% --------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    conversational_memory = ConversationBufferWindowMemory(
-        memory_key="chat_history", k=3, return_messages=True
-    )
+    conversational_memory = ConversationBufferWindowMemory(memory_key="chat_history", k=3, return_messages=True)
     abot = Agent(get_llm(), get_tools(), get_prompt())
     user_query = "What is my favourite tennis player's first name?"
     answer = invoke_agent(user_query, conversational_memory)
